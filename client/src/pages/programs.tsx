@@ -1,29 +1,26 @@
 import { useEffect, useState } from "react";
-
-export default function Programs() {
-  const [programs, setPrograms] = useState([]);
-
+interface Serie {
+  id: number;
+  title: string;
+  poster: string;
+}
+function Programs() {
+  const [series, setSeries] = useState<Serie[]>([]);
   useEffect(() => {
-    fetch("http://localhost:3310/api/programs")
-      .then((response) => response.json())
-      .then((data) => setPrograms(data))
-      .catch((error) => console.error("Error fetching programs:", error));
+    fetch("http://localhost:3310/api/programs/")
+      .then((res) => res.json())
+      .then((data) => setSeries(data))
+      .catch((error) => console.error(error));
   }, []);
-
   return (
-    <div>
-      <h1>Liste des Séries</h1>
-      <ul>
-        {programs.map((program) => (
-          <li key={program}>
-            <h2>{program}</h2>
-            <p>{program}</p>
-            <img src={program} alt={`${program} poster`} />
-            <p>Pays : {program}</p>
-            <p>Année : {program}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      {series.map((serie) => (
+        <figure key={serie.id}>
+          <figcaption>{serie.title}</figcaption>
+          <img src={serie.poster} alt={serie.title} />
+        </figure>
+      ))}
+    </>
   );
 }
+export default Programs;
