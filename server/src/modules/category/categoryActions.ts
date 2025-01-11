@@ -1,4 +1,4 @@
-// Some data to make the trick
+import type { RequestHandler } from "express";
 const categories = [
   {
     id: 1,
@@ -9,27 +9,25 @@ const categories = [
     name: "Science-Fiction",
   },
 ];
-
 // Declare the actions
-
-import type { RequestHandler } from "express";
-
-// Action to get all categories
 const browse: RequestHandler = (req, res) => {
-  res.json(categories);
+  if (req.query.q != null) {
+    const filteredCategories = categories.filter((category) =>
+      category.name.includes(req.query.q as string),
+    );
+    res.json(filteredCategories);
+  } else {
+    res.json(categories);
+  }
 };
-
-// Action to get a single category by id
 const read: RequestHandler = (req, res) => {
-  const categoryId = Number.parseInt(req.params.id);
-  const category = categories.find((cat) => cat.id === categoryId);
-
+  const parsedId = Number.parseInt(req.params.id);
+  const category = categories.find((c) => c.id === parsedId);
   if (category != null) {
     res.json(category);
   } else {
-    res.status(404).send;
+    res.sendStatus(404);
   }
 };
 
-// Export them to import them somewhere else
 export default { browse, read };
